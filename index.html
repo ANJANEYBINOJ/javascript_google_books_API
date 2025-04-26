@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Google Books API</h1>
+    <ul id="books"></ul>
+    <script>
+        var apiKey = "Removed";
+        var baseApiUrl = 'https://www.googleapis.com/books/v1/volumes?q=';
+        var queryTerm = 'javascript';
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function() {
+            console.log(xhr.readyState);
+            console.log(xhr.responseText);
+
+            // Check if the request is fully processed
+            if(xhr.readyState === XMLHttpRequest.DONE)
+            {
+                // Parse the response string into a JavaScript object
+                var result = JSON.parse(xhr.responseText);
+                console.log(result.items);
+
+                // Select the <ul> element where books will be added
+                var bookList = document.getElementById('books');
+                
+                // Iterate through each book item in the API response
+                for (var j = 0; j < result.items.length; j++) {
+                    // Get the title of the current book
+                    var bookTitle = result.items[j].volumeInfo.title;
+                    console.log(bookTitle);
+
+                    // Get the thumbnail image URL
+                    var bookImage = result.items[j].volumeInfo.imageLinks.thumbnail;
+
+                    // Get the link to more information about the book
+                    var bookUrl = result.items[j].volumeInfo.infoLink;
+
+                    // Create and insert a new list item with book info
+                    var listItem = "<li>" + "<a href='" + bookUrl + "'>" + bookTitle + "</a>" + "<br>" + "<img src='" + bookImage + "' alt='javascript book cover' id='coverimage'>" + "</li>";
+                    bookList.innerHTML += listItem;
+                }
+            }
+        }
+
+        xhr.open('GET', baseApiUrl + queryTerm);
+        xhr.send();
+
+    </script>
+</body>
+</html>
